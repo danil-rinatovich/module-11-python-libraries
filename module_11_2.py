@@ -1,79 +1,47 @@
 import inspect
-import sys
 from pprint import pprint
 
-class Introspection:
-    def __init__(self):
-        self.name = 'Danil'
 
-    def introspection_info(obj):
-        pass
+def introspection_info(obj):
+    # тип объекта
+    type_ = type(obj)
 
-# название функции
-print(Introspection.introspection_info.__name__)
+    # возвращает отсортированный список атрибутов и методов, доступных
+    # для указанного объекта, который может быть переменной или функцией
+    first_list = []
+    second_list = []
+    count = 0
+    for i in dir(obj):
+        count += 1
+        if i.startswith('__'):
+            first_list.append(i)
+        else:
+            second_list.append(i)
 
-# тип объекта или объекта
-print(type(Introspection.introspection_info))
+    # возвращает из какого модуля мы взяли объект
+    module_ = inspect.getmodule(obj)
 
-# тип экземпляра метода (или атрибута)
-print(type(Introspection.introspection_info.__get__))
+    # id объекта
+    id_ = id(obj)
 
-# возвращает отсортированный список атрибутов и методов, доступных
-# для указанного объекта, который может быть переменной или функцией
-pprint(dir(Introspection.introspection_info))
+    # название функции
+    name_ = obj.__name__
 
-# проверка на существование атрибута
-intros = Introspection()
-print(hasattr(intros, 'name'))
+    # можем ли мы вызвать этот объект
+    calab_ = callable(obj)
 
-# получение атрибута
-print(getattr(intros, 'name'))
-print(getattr(intros, 'Danil', 'нету'))
+    # является ли функцией
+    func_ = inspect.isfunction(obj)
 
-# можем ли мы вызвать этот объект
-print(callable(intros.introspection_info))
+    return {'Тип': type_,
+            "Атрибуты": first_list,
+            "Методы": second_list,
+            "obj из модуля": module_,
+            "id": id_,
+            "Название": name_,
+            "Можем ли мы вызвать функцию": calab_,
+            'Является фнкцией': func_}
 
-# является ли объект экземпляром указанного класса
-print(isinstance(intros, Introspection), '\n')
 
-# inspect - собирает удобные методы и классы для отображения интроспективной информации
-# является ли библиотекой
-print(inspect.ismodule(sys))
-print(inspect.ismodule(intros))
-# является ли классом
-print(inspect.isclass(sys))
-print(inspect.isclass(Introspection))
-# является ли функцией
-print(inspect.isfunction(sys))
-print(inspect.isfunction(Introspection.introspection_info))
-# встроенная ли в Python
-print(inspect.isbuiltin(sys))
-print(inspect.isbuiltin(round))
-# возвращает из какого модуля мы взяли объект
-type_ = inspect.getmodule(intros)
-print(type(type_), inspect.getmodule(Introspection), '\n')
-
-# sys - позволяет работать с настройками интерпретатора
-# путь к интерпретатору Python
-print(sys.executable)
-
-# операционная система
-print(sys.platform)
-
-# текущая версия Python
-print(sys.version)
-print(sys.version_info, '\n')
-
-def factorial(n):
-    if n == 1:
-        return 1
-    else:
-        return n * factorial(n - 1)
-
-# позволяет расширить глубину нашего стека
-sys.setrecursionlimit(5000)
-# позволяет увеличить длину строки
-sys.set_int_max_str_digits(10000)
-print(factorial(2000))
-# размер объекта в байтах
-print(sys.getsizeof(Introspection))
+introspect = introspection_info(str)
+pprint(introspect)
